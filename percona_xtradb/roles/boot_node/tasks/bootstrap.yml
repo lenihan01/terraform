@@ -1,0 +1,15 @@
+# (C) Copyright 2021 Hewlett Packard Enterprise Development LP
+---
+# This playbook creates database, DB users with remote login
+
+- name: Start Percona-XtraDB Bootstrap Service
+  service: name=mysql@bootstrap.service state=started
+
+#- name: create database
+#  mysql_db: "name={{ morpheus['customOptions']['databaseName'] }} state=present"
+
+- name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
+  mysql_user: "name={{ SST_USER }} password={{ SST_PASSWORD }} priv=*.*:ALL,GRANT host='%' state=present"
+  
+- name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
+  mysql_user: "name={{ SST_USER }} password={{ SST_PASSWORD }} priv=*.*:ALL,GRANT host='localhost' state=present"

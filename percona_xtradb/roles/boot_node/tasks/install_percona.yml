@@ -1,0 +1,84 @@
+# (C) Copyright 2021 Hewlett Packard Enterprise Development LP
+# This playbook will install MariaDB
+
+- name: yum-clean-all
+  command: yum clean all
+  args:
+    warn: yes
+
+- name: Install Percona repository
+  yum:
+    name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+    state: present
+
+- name: Install Percona-XtraDB cluster
+  yum:
+    name: Percona-XtraDB-Cluster-57
+    state: present
+
+- name: Install Python MYSQL module
+  yum:
+    name: MySQL-python
+    state: present
+
+- name: Detect and properly set root password
+  stat:
+    path: /root/.my.cnf
+  register: conf_file
+
+- name: Start Percona-XtraDB Service
+  service: name=mysql state=started enabled=yes
+  when: conf_file.stat.exists==False
+ 
+- name: Start firewalld
+  service: name=firewalld state=started enabled=yes
+
+- name: insert firewalld rule
+  firewalld:
+     port: "{{ item }}/tcp"
+     permanent: true
+     state: enabled
+     immediate: yes
+  loop:
+    - 3306
+    - 4444
+    - 4567
+    - 4568
+    - 9200
+
+- shell: cat /var/log/mysqld.log | grep "temporary password" | grep -oE '[^ ]+$'
+  register: tmp_root_password
+  when: conf_file.stat.exists==False
+
+#- mysql_user:
+#    name: root
+#    password: "{{ MYSQL_ROOT_PASSWORD }}"
+#  when: conf_file.stat.exists==True
+- name: Set new password from temporary password
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ MYSQL_ROOT_PASSWORD }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
+  when: conf_file.stat.exists==False
+
+# Now that the root password is set to the specified, make it default for the client.
+- name: Copy my.cnf
+  template:
+    src: root_my.cnf.j2
+    dest: /root/.my.cnf
+    force: yes
+
+#
+#- name: set root user password
+#  mysql_user: name=root
+#              password="{{ MYSQL_ROOT_PASSWORD }}"
+#              check_implicit_admin=yes
+#              login_user="root"
+#              login_password="{{ tmp_root_password.stdout }}"
+#              state=present 
+
+#- name: Set new password for root user from temporary password
+#  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_pwd }}';"'
+
+- name: Stop Percona-XtraDB Service
+  service: name=mysql state=stopped
+
+- name: Create the wsrep conf file
+  template: src=templates/wsrep.cnf.j2 dest=/etc/percona-xtradb-cluster.conf.d/wsrep.cnf

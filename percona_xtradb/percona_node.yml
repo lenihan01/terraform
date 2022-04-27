@@ -1,0 +1,6 @@
+# (C) Copyright 2021 Hewlett Packard Enterprise Development LP
+- name: Install Percona BootNode 
+  hosts: all
+  become: yes
+  roles:
+    - node 
