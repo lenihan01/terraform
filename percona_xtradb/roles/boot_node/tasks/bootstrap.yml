@@ -9,7 +9,7 @@
 #  mysql_db: "name={{ morpheus['customOptions']['databaseName'] }} state=present"
 
 - name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
-  mysql_user: "name={{ SST_USER }} password={{ SST_PASSWORD }} priv=*.*:ALL,GRANT host='%' state=present"
+  mysql_user: "name={{ lookup('ansible.builtin.env', 'SST_USER') }} password={{ lookup('ansible.builtin.env', 'SST_PASSWORD') }} priv=*.*:ALL,GRANT host='%' state=present"
   
 - name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
-  mysql_user: "name={{ SST_USER }} password={{ SST_PASSWORD }} priv=*.*:ALL,GRANT host='localhost' state=present"
+  mysql_user: "name={{ lookup('ansible.builtin.env', 'SST_USER') }} password={{ lookup('ansible.builtin.env', 'SST_PASSWORD') }} priv=*.*:ALL,GRANT host='localhost' state=present"
