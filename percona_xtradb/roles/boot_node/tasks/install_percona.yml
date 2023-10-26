@@ -50,13 +50,13 @@
   register: tmp_root_password
   when: conf_file.stat.exists==False
 
-#- mysql_user:
-#    name: root
-#    password: "{{ MYSQL_ROOT_PASSWORD }}"
-#  when: conf_file.stat.exists==True
-- name: Set new password from temporary password
-  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ MYSQL_ROOT_PASSWORD }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
-  when: conf_file.stat.exists==False
+- mysql_user:
+    name: root
+    password: "{{ MYSQL_ROOT_PASSWORD }}"
+  when: conf_file.stat.exists==True
+#- name: Set new password from temporary password
+#  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ MYSQL_ROOT_PASSWORD }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
+#  when: conf_file.stat.exists==False
 
 # Now that the root password is set to the specified, make it default for the client.
 - name: Copy my.cnf
