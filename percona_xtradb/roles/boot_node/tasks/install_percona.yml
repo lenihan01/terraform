@@ -50,14 +50,17 @@
   register: tmp_root_password
   when: conf_file.stat.exists==False
 
+- shell: echo $MYSQL_ROOT_PASSWORD
+  register: mysql_root_password
+  
 - mysql_user:
     name: root
     password: "{{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD') }}"
   when: conf_file.stat.exists==True
     
-#- name: Set new password from temporary password
-#  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD') }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
-#  when: conf_file.stat.exists==False
+- name: Set new password from temporary password
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_password }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
+  when: conf_file.stat.exists==False
 
 # Now that the root password is set to the specified, make it default for the client.
 - name: Copy my.cnf
@@ -74,8 +77,8 @@
               login_password="{{ tmp_root_password.stdout }}"
               state=present 
 
-#- name: Set new password for root user from temporary password
-#  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_pwd }}';"'
+- name: Set new password for root user from temporary password
+  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"'
 
 - name: Stop Percona-XtraDB Service
   service: name=mysql state=stopped
