@@ -52,7 +52,7 @@
 
 - mysql_user:
     name: root
-    password: "{{ MYSQL_ROOT_PASSWORD }}"
+    password: "{{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD') }}"
   # when: conf_file.stat.exists==True
 #- name: Set new password from temporary password
 #  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ MYSQL_ROOT_PASSWORD }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
