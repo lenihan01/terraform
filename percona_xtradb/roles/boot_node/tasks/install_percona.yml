@@ -77,8 +77,8 @@
               login_password="{{ tmp_root_password.stdout }}"
               state=present 
 
-- name: Set new password for root user from temporary password
-  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"'
+#- name: Set new password for root user from temporary password
+#  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"'
 
 - name: Stop Percona-XtraDB Service
   service: name=mysql state=stopped
