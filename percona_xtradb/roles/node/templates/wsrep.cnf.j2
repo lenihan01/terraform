@@ -25,4 +25,4 @@ pxc_strict_mode=ENFORCING
 # SST method
 wsrep_sst_method=xtrabackup-v2
 #Authentication for SST method
-wsrep_sst_auth={{ SST_USER}}:{{ SST_PASSWORD }}
+wsrep_sst_auth={{ sst_user.stdout }}:{{ sst_password.stdout }}
