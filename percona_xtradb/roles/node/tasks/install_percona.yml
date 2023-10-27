@@ -44,6 +44,24 @@
     - 4568
     - 9200
 
+- shell: echo $MYSQL_ROOT_PASSWORD
+  register: mysql_root_password
+
+- shell: echo $BOOT_NODE_IP
+  register: boot_node_ip
+
+- shell: echo $NODE1_IP
+  register: node1_ip
+
+- shell: echo $NODE2_IP
+  register: node2_ip
+
+- shell: echo $SST_USER
+  register: sst_user
+
+- shell: echo $SST_PASSWORD
+  register: sst_password
+  
 - name: Create the wsrep conf file
   template: src=templates/wsrep.cnf.j2 dest=/etc/percona-xtradb-cluster.conf.d/wsrep.cnf
 
