@@ -1,4 +1,4 @@
 # (C) Copyright 2021 Hewlett Packard Enterprise Development LP
 [client]
 user = root
-password = {{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD') }}
+password = {{ mysql_root_password.stdout }}
