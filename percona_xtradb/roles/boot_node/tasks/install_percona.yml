@@ -69,13 +69,13 @@
     dest: /root/.my.cnf
     force: yes
 
-- name: set root user password
-  mysql_user: name=root
-              password="{{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD') }}"
-              check_implicit_admin=yes
-              login_user="root"
-              login_password="{{ tmp_root_password.stdout }}"
-              state=present 
+#- name: set root user password
+#  mysql_user: name=root
+#              password="{{ mysql_root_password.stdout }}"
+#              check_implicit_admin=yes
+#              login_user="root"
+#              login_password="{{ tmp_root_password.stdout }}"
+#              state=present 
 
 #- name: Set new password for root user from temporary password
 #  shell: 'mysql --connect-expired-password -u root -p"{{ tmp_root_password }}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"'
