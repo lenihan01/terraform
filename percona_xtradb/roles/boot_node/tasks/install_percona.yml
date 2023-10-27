@@ -59,7 +59,7 @@
   when: conf_file.stat.exists==True
     
 - name: Set new password from temporary password
-  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_password }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_password.stdout }}'');" --connect-expired-password -uroot -p"{{ tmp_root_password.stdout }}"'
   when: conf_file.stat.exists==False
 
 # Now that the root password is set to the specified, make it default for the client.
