@@ -5,7 +5,7 @@ wsrep_provider=/usr/lib64/galera3/libgalera_smm.so
 # Cluster connection URL contains IPs of nodes
 #If no IP is found, this implies that a new cluster needs to be created,
 #in order to do that you need to bootstrap this node
-wsrep_cluster_address=gcomm://{{ boot_node_ip.stdout }},{{ node1_ip.stdout }},{{ node2_ip.stdout }}
+wsrep_cluster_address=gcomm://{{ lookup('ansible.builtin.env', 'BOOT_NODE_IP') }},{{ lookup('ansible.builtin.env', 'NODE1_IP') }},{{ lookup('ansible.builtin.env', 'NODE2_IP') }}
 # In order for Galera to work correctly binlog format should be ROW
 binlog_format=ROW
 # MyISAM storage engine has only experimental support
@@ -16,7 +16,7 @@ wsrep_log_conflicts
 # This changes how InnoDB autoincrement locks are managed and is a requirement for Galera
 innodb_autoinc_lock_mode=2
 # Node IP address
-wsrep_node_address={{ boot_node_ip.stdout }}
+wsrep_node_address={{ lookup('ansible.builtin.env', 'BOOT_NODE_IP') }}
 # Cluster name
 wsrep_cluster_name=pxc-cluster
 #If wsrep_node_name is not specified,  then system hostname will be used
